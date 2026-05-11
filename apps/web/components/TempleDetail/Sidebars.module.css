@@ -1,0 +1,181 @@
+.sidebarWidget {
+  background: var(--color-white);
+  border-radius: var(--radius-lg);
+  box-shadow: 0 2px 10px rgba(0,0,0,0.02);
+  border: 1px solid rgba(0,0,0,0.05);
+  padding: 24px;
+}
+
+.widgetTitle {
+  font-family: var(--font-playfair);
+  font-size: 20px;
+  color: var(--color-text-dark);
+  margin-bottom: 8px;
+}
+
+.widgetSubtitle {
+  font-size: 13px;
+  color: #666;
+  line-height: 1.5;
+  margin-bottom: 24px;
+}
+
+/* Prayers List */
+.prayersList {
+  list-style: none;
+  padding: 0;
+  margin: 0 0 24px 0;
+}
+
+.prayerItem {
+  display: flex;
+  align-items: center;
+  padding: 12px 0;
+  border-bottom: 1px solid rgba(0,0,0,0.05);
+}
+
+.prayerItem:last-child {
+  border-bottom: none;
+}
+
+.prayerIcon {
+  color: #C08A3E;
+  margin-right: 12px;
+}
+
+.prayerName {
+  flex: 1;
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--color-text-dark);
+}
+
+.prayerPrice {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--color-text-dark);
+}
+
+.viewAllOfferingsBtn {
+  width: 100%;
+  padding: 14px;
+  margin-bottom: 16px;
+}
+
+.trustBox {
+  background: #fdf5ea;
+  border: 1px solid rgba(192, 138, 62, 0.2);
+  border-radius: var(--radius-md);
+  padding: 16px;
+  display: flex;
+  gap: 12px;
+  align-items: flex-start;
+}
+
+.trustIcon {
+  color: #C08A3E;
+  flex-shrink: 0;
+}
+
+.trustBox p {
+  font-size: 12px;
+  color: #555;
+  line-height: 1.5;
+  margin: 0;
+}
+
+/* Highlights List */
+.highlightsList {
+  list-style: none;
+  padding: 0;
+  margin: 0 0 24px 0;
+}
+
+.highlightItem {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  font-size: 13px;
+  color: #444;
+  line-height: 1.5;
+  margin-bottom: 16px;
+}
+
+.highlightItem:last-child {
+  margin-bottom: 0;
+}
+
+.highlightIcon {
+  font-size: 14px;
+  margin-top: 2px;
+}
+
+/* Timing Box */
+.timingBox {
+  background: #fdf5ea;
+  border: 1px solid rgba(192, 138, 62, 0.2);
+  border-radius: var(--radius-md);
+  padding: 16px;
+  display: flex;
+  gap: 16px;
+  align-items: flex-start;
+}
+
+.timingIcon {
+  color: #C08A3E;
+  flex-shrink: 0;
+  margin-top: 2px;
+}
+
+.timingTitle {
+  font-size: 14px;
+  color: var(--color-text-dark);
+  margin-bottom: 4px;
+}
+
+.timingText {
+  font-size: 13px;
+  color: #555;
+  line-height: 1.5;
+  margin: 0;
+}
+
+/* Location Box */
+.addressText {
+  font-size: 13px;
+  color: #555;
+  line-height: 1.5;
+  margin-bottom: 16px;
+}
+
+.mapWrapper {
+  position: relative;
+  width: 100%;
+  height: 120px;
+  border-radius: var(--radius-md);
+  overflow: hidden;
+  margin-bottom: 16px;
+  background: #eee;
+  border: 1px solid rgba(0,0,0,0.1);
+}
+
+.mapPlaceholder {
+  width: 100%;
+  height: 100%;
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.mapPin {
+  font-size: 24px;
+  position: relative;
+  z-index: 2;
+  text-shadow: 0 2px 4px rgba(0,0,0,0.2);
+}
+
+.directionsBtn {
+  width: 100%;
+  justify-content: center;
+}

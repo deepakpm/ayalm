@@ -1,0 +1,60 @@
+.badgesSection {
+  background-color: var(--color-bg-light);
+  padding: 24px 0;
+  border-top: 1px solid rgba(0, 0, 0, 0.05);
+  border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+}
+
+.container {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.badge {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.icon {
+  color: var(--color-primary);
+}
+
+.text {
+  display: flex;
+  flex-direction: column;
+}
+
+.title {
+  font-size: 14px;
+  color: #666;
+}
+
+.subtitle {
+  font-size: 16px;
+  font-weight: 600;
+  color: var(--color-text-dark);
+}
+
+.divider {
+  height: 40px;
+  width: 1px;
+  background-color: rgba(0, 0, 0, 0.1);
+}
+
+@media (max-width: 768px) {
+  .container {
+    flex-wrap: wrap;
+    gap: 20px;
+    justify-content: center;
+  }
+  
+  .badge {
+    min-width: 40%;
+  }
+  
+  .divider {
+    display: none;
+  }
+}

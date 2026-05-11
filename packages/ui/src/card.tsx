@@ -1,27 +1,24 @@
-import { type JSX } from "react";
+import React, { HTMLAttributes } from 'react';
+import styles from './card.module.css';
 
-export function Card({
-  className,
-  title,
-  children,
-  href,
-}: {
-  className?: string;
-  title: string;
-  children: React.ReactNode;
-  href: string;
-}): JSX.Element {
-  return (
-    <a
-      className={className}
-      href={`${href}?utm_source=create-turbo&utm_medium=basic&utm_campaign=create-turbo"`}
-      rel="noopener noreferrer"
-      target="_blank"
-    >
-      <h2>
-        {title} <span>-&gt;</span>
-      </h2>
-      <p>{children}</p>
-    </a>
-  );
+export interface CardProps extends HTMLAttributes<HTMLDivElement> {
+  hoverable?: boolean;
 }
+
+export const Card = React.forwardRef<HTMLDivElement, CardProps>(
+  ({ children, className = '', hoverable = false, ...props }, ref) => {
+    const classNames = [
+      styles.card,
+      hoverable ? styles.hoverable : '',
+      className,
+    ].filter(Boolean).join(' ');
+
+    return (
+      <div ref={ref} className={classNames} {...props}>
+        {children}
+      </div>
+    );
+  }
+);
+
+Card.displayName = 'Card';

@@ -1,0 +1,86 @@
+.categorySection {
+  padding: 60px 0;
+  background-color: var(--color-white);
+  margin-top: -60px; /* Overlap with hero slightly if needed or just space */
+  position: relative;
+  z-index: 10;
+}
+
+.gridContainer {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 24px;
+}
+
+.card {
+  background: var(--color-white);
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
+  border: 1px solid rgba(0, 0, 0, 0.02);
+  transition: transform 0.2s, box-shadow 0.2s;
+  display: flex;
+  flex-direction: column;
+}
+
+.card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 15px 35px rgba(0, 0, 0, 0.08);
+}
+
+.imageWrapper {
+  position: relative;
+  height: 200px;
+  width: 100%;
+}
+
+.content {
+  padding: 24px;
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  flex: 1;
+}
+
+.title {
+  font-size: 20px;
+  color: var(--color-primary);
+  margin-bottom: 8px;
+}
+
+.desc {
+  font-size: 14px;
+  color: #666;
+  line-height: 1.5;
+  max-width: 90%;
+}
+
+.iconButton {
+  background: rgba(185, 28, 28, 0.05);
+  color: var(--color-primary);
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  transition: background 0.2s;
+}
+
+.card:hover .iconButton {
+  background: var(--color-primary);
+  color: var(--color-white);
+}
+
+@media (max-width: 992px) {
+  .gridContainer {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 768px) {
+  .gridContainer {
+    grid-template-columns: 1fr;
+  }
+}
