@@ -142,7 +142,6 @@ const TempleHero = () => {
           </Button>
         </div>
       </div>
-
     </div>
   );
 };
