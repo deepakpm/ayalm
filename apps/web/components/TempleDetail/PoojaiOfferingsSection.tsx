@@ -1,21 +1,26 @@
+"use client";
+
 import React from 'react';
 import Image from 'next/image';
 import { ArrowRight } from 'lucide-react';
 import styles from './Sections.module.css';
-
-const OFFERINGS = [
-  { name: 'Abhishekam', freq: 'Daily', price: '₹501', img: '/images/astrology_cat.png' },
-  { name: 'Archana', freq: 'Daily', price: '₹251', img: '/images/offerings_cat.png' },
-  { name: 'Sahasranama Archana', freq: 'Daily', price: '₹751', img: '/images/temples_cat.png' },
-  { name: 'Kalyana Utsavam', freq: 'Daily', price: '₹2,501', img: '/images/viratham_cat.png' }
-];
+import { useLanguage } from '../../context/LanguageContext';
 
 const PoojaiOfferingsSection = () => {
+  const { t } = useLanguage();
+
+  const OFFERINGS = [
+    { name: t.templeDetail.offeringData.abhishekam, freq: t.templeDetail.offeringData.daily, price: '₹501', img: '/images/astrology_cat.png' },
+    { name: t.templeDetail.offeringData.archana, freq: t.templeDetail.offeringData.daily, price: '₹251', img: '/images/offerings_cat.png' },
+    { name: t.templeDetail.offeringData.sahasranama, freq: t.templeDetail.offeringData.daily, price: '₹751', img: '/images/temples_cat.png' },
+    { name: t.templeDetail.offeringData.kalyana, freq: t.templeDetail.offeringData.daily, price: '₹2,501', img: '/images/viratham_cat.png' }
+  ];
+
   return (
     <section className={styles.sectionContainer}>
       <div className={styles.sectionHeader}>
-        <h2 className={styles.sectionTitle}>Poojai & Offerings</h2>
-        <button className={styles.viewAllBtn}>View All Poojas <ArrowRight size={14} style={{display: 'inline', verticalAlign: 'middle', marginLeft: 4}} /></button>
+        <h2 className={styles.sectionTitle}>{t.templeDetail.sections.poojaOfferings}</h2>
+        <button className={styles.viewAllBtn}>{t.templeDetail.sections.viewAll} <ArrowRight size={14} style={{display: 'inline', verticalAlign: 'middle', marginLeft: 4}} /></button>
       </div>
 
       <div className={styles.offeringsScroll}>

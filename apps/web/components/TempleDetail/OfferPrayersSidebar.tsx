@@ -1,7 +1,10 @@
+"use client";
+
 import React from 'react';
 import { Button } from '@repo/ui/button';
 import { ShieldCheck } from 'lucide-react';
 import styles from './Sidebars.module.css';
+import { useLanguage } from '../../context/LanguageContext';
 
 const SIDEBAR_OFFERINGS = [
   { name: 'Archana', price: '₹251' },
@@ -11,11 +14,13 @@ const SIDEBAR_OFFERINGS = [
 ];
 
 const OfferPrayersSidebar = () => {
+  const { t } = useLanguage();
+
   return (
     <div className={styles.sidebarWidget}>
-      <h3 className={styles.widgetTitle}>Offer Your Prayers</h3>
+      <h3 className={styles.widgetTitle}>{t.templeDetail.sidebar.bookOfferings}</h3>
       <p className={styles.widgetSubtitle}>
-        Book poojas and offer your prayers to receive divine blessings.
+        {t.templeDetail.sidebar.bookDesc}
       </p>
 
       <ul className={styles.prayersList}>
@@ -29,12 +34,12 @@ const OfferPrayersSidebar = () => {
       </ul>
 
       <Button variant="primary" className={styles.viewAllOfferingsBtn}>
-        View All Offerings
+        {t.templeDetail.sidebar.viewAllOfferings}
       </Button>
 
       <div className={styles.trustBox}>
         <ShieldCheck size={20} className={styles.trustIcon} />
-        <p>Pooja will be performed by verified priests as per temple rituals.</p>
+        <p>{t.templeDetail.sidebar.trustBoxText}</p>
       </div>
     </div>
   );

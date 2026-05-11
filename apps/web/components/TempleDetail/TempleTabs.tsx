@@ -2,18 +2,7 @@
 
 import React from 'react';
 import styles from './TempleTabs.module.css';
-
-const TABS = [
-  'Overview',
-  'Deities',
-  'Poojaa & Offerings',
-  'Events',
-  'Speciality',
-  'Temple Info',
-  'How to Reach',
-  'Gallery',
-  'Reviews'
-];
+import { useLanguage } from '../../context/LanguageContext';
 
 interface TempleTabsProps {
   activeTab: string;
@@ -21,16 +10,30 @@ interface TempleTabsProps {
 }
 
 const TempleTabs: React.FC<TempleTabsProps> = ({ activeTab, onTabChange }) => {
+  const { t } = useLanguage();
+
+  const TABS = [
+    { id: 'Overview', label: t.templeDetail.tabs.overview },
+    { id: 'Deities', label: t.templeDetail.tabs.deities },
+    { id: 'Poojaa & Offerings', label: t.templeDetail.tabs.offerings },
+    { id: 'Events', label: t.templeDetail.tabs.events },
+    { id: 'Speciality', label: t.templeDetail.tabs.speciality },
+    { id: 'Temple Info', label: t.templeDetail.tabs.info },
+    { id: 'How to Reach', label: t.templeDetail.tabs.howToReach },
+    { id: 'Gallery', label: t.templeDetail.tabs.gallery },
+    { id: 'Reviews', label: t.templeDetail.tabs.reviews }
+  ];
+
   return (
     <div className={styles.tabsContainer}>
       <div className={styles.tabsScroll}>
         {TABS.map(tab => (
           <button
-            key={tab}
-            className={`${styles.tabBtn} ${activeTab === tab ? styles.activeTab : ''}`}
-            onClick={() => onTabChange(tab)}
+            key={tab.id}
+            className={`${styles.tabBtn} ${activeTab === tab.id ? styles.activeTab : ''}`}
+            onClick={() => onTabChange(tab.id)}
           >
-            {tab}
+            {tab.label}
           </button>
         ))}
       </div>

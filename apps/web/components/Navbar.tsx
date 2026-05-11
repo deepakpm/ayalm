@@ -6,9 +6,12 @@ import { usePathname } from 'next/navigation';
 import { Search, User, Menu, X } from 'lucide-react';
 import styles from './Navbar.module.css';
 
+import { useLanguage } from '../context/LanguageContext';
+
 const Navbar = () => {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const pathname = usePathname();
+  const { language, setLanguage, t } = useLanguage();
 
   const toggleMobileMenu = () => {
     setIsMobileMenuOpen(!isMobileMenuOpen);
@@ -20,15 +23,14 @@ const Navbar = () => {
     <nav className={styles.navbar}>
       <div className={`container ${styles.navContainer}`}>
         <div className={styles.logo}>
-          {/* Using a placeholder text for logo to match design */}
           <span className={styles.logoIcon}>🕉</span>
           <span className={styles.logoText}>ALAYAM</span>
         </div>
         
         <ul className={`${styles.navLinks} ${isMobileMenuOpen ? styles.mobileOpen : ''}`}>
-          <li><Link href="/" className={isActive('/') ? styles.active : ''}>Home</Link></li>
-          <li><Link href="/temples" className={isActive('/temples') ? styles.active : ''}>Temples</Link></li>
-          <li><Link href="/offerings" className={isActive('/offerings') ? styles.active : ''}>Offerings</Link></li>
+          <li><Link href="/" className={isActive('/') ? styles.active : ''}>{t.navbar.home}</Link></li>
+          <li><Link href="/temples" className={isActive('/temples') ? styles.active : ''}>{t.navbar.temples}</Link></li>
+          <li><Link href="/offerings" className={isActive('/offerings') ? styles.active : ''}>{t.navbar.offerings}</Link></li>
           <li><a href="#">Astrology</a></li>
           <li><a href="#">Iyer Connect</a></li>
           <li><a href="#">Virathangal</a></li>
@@ -36,6 +38,21 @@ const Navbar = () => {
         </ul>
 
         <div className={styles.actions}>
+          <div className={styles.langToggle}>
+            <button 
+              className={language === 'en' ? styles.langActive : styles.langBtn} 
+              onClick={() => setLanguage('en')}
+            >
+              EN
+            </button>
+            <span className={styles.langDivider}>|</span>
+            <button 
+              className={language === 'ta' ? styles.langActive : styles.langBtn} 
+              onClick={() => setLanguage('ta')}
+            >
+              தமிழ்
+            </button>
+          </div>
           <button className={styles.iconButton} aria-label="Search">
             <Search size={20} />
           </button>

@@ -17,6 +17,7 @@ import ReviewsSection from './ReviewsSection';
 import OfferPrayersSidebar from './OfferPrayersSidebar';
 import TempleHighlightsSidebar from './TempleHighlightsSidebar';
 import LocationSidebar from './LocationSidebar';
+import { useLanguage } from '../../context/LanguageContext';
 
 interface TempleDetailLayoutProps {
   id: string;
@@ -26,6 +27,7 @@ const TempleDetailLayout: React.FC<TempleDetailLayoutProps> = ({ id }) => {
   // Normally we would fetch temple data here based on the ID.
   // We'll use static mock data for now to match the design.
   const [activeTab, setActiveTab] = React.useState('Overview');
+  const { t } = useLanguage();
 
   const renderContent = () => {
     switch (activeTab) {
@@ -71,11 +73,11 @@ const TempleDetailLayout: React.FC<TempleDetailLayoutProps> = ({ id }) => {
         {/* Breadcrumbs */}
         <div className={styles.breadcrumbs}>
           <Link href="/" className={styles.breadcrumbLink}>
-            <Home size={14} className={styles.homeIcon} /> Home
+            <Home size={14} className={styles.homeIcon} /> {t.navbar.home}
           </Link>
           <ChevronRight size={14} className={styles.breadcrumbChevron} /> 
           <Link href="/temples" className={styles.breadcrumbLink}>
-            Temples
+            {t.navbar.temples}
           </Link>
           <ChevronRight size={14} className={styles.breadcrumbChevron} />
           <span className={styles.activeBreadcrumb}>Arulmigu Meenakshi Amman Temple</span>

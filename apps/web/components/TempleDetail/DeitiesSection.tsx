@@ -1,36 +1,41 @@
+"use client";
+
 import React from 'react';
 import Image from 'next/image';
 import { ArrowRight } from 'lucide-react';
 import { Card } from '@repo/ui/card';
 import styles from './Sections.module.css';
-
-const DEITIES = [
-  {
-    name: 'Arulmigu Meenakshi Amman',
-    role: 'Main Deity',
-    description: 'Goddess of Madurai, an incarnation of Parvati.',
-    image: '/images/temple_meenakshi.png'
-  },
-  {
-    name: 'Arulmigu Sundareswarar',
-    role: 'Consort',
-    description: 'Lord Shiva in the form of Sundareswarar.',
-    image: '/images/temple_arunachaleswarar.png'
-  },
-  {
-    name: 'Arulmigu Kallazhagar',
-    role: 'Brother',
-    description: 'Lord Vishnu, the brother of Goddess Meenakshi.',
-    image: '/images/temple_ranganathaswamy.png'
-  }
-];
+import { useLanguage } from '../../context/LanguageContext';
 
 const DeitiesSection = () => {
+  const { t } = useLanguage();
+
+  const DEITIES = [
+    {
+      name: t.templeDetail.deityData.meenakshi.name,
+      role: t.templeDetail.deityData.meenakshi.role,
+      description: t.templeDetail.deityData.meenakshi.desc,
+      image: '/images/temple_meenakshi.png'
+    },
+    {
+      name: t.templeDetail.deityData.sundareswarar.name,
+      role: t.templeDetail.deityData.sundareswarar.role,
+      description: t.templeDetail.deityData.sundareswarar.desc,
+      image: '/images/temple_arunachaleswarar.png'
+    },
+    {
+      name: t.templeDetail.deityData.kallazhagar.name,
+      role: t.templeDetail.deityData.kallazhagar.role,
+      description: t.templeDetail.deityData.kallazhagar.desc,
+      image: '/images/temple_ranganathaswamy.png'
+    }
+  ];
+
   return (
     <section className={styles.sectionContainer}>
       <div className={styles.sectionHeader}>
-        <h2 className={styles.sectionTitle}>Deities</h2>
-        <button className={styles.viewAllBtn}>View All</button>
+        <h2 className={styles.sectionTitle}>{t.templeDetail.sections.deities}</h2>
+        <button className={styles.viewAllBtn}>{t.templeDetail.sections.viewAll}</button>
       </div>
 
       <div className={styles.deitiesGrid}>
@@ -43,7 +48,7 @@ const DeitiesSection = () => {
               <h3 className={styles.deityName}>{deity.name}</h3>
               <span className={styles.deityRole}>{deity.role}</span>
               <p className={styles.deityDesc}>{deity.description}</p>
-              <a href="#" className={styles.learnMore}>Learn More <ArrowRight size={14} /></a>
+              <a href="#" className={styles.learnMore}>{t.templeDetail.sections.learnMore} <ArrowRight size={14} /></a>
             </div>
           </Card>
         ))}

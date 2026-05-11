@@ -7,6 +7,7 @@ import { MapPin, Star, Share, ChevronLeft, ChevronRight } from 'lucide-react';
 import { Button } from '@repo/ui/button';
 import { Badge } from '@repo/ui/badge';
 import styles from './TempleHero.module.css';
+import { useLanguage } from '../../context/LanguageContext';
 
 const MOCK_IMAGES = [
   '/images/temple_meenakshi.png',
@@ -17,6 +18,7 @@ const MOCK_IMAGES = [
 ];
 
 const TempleHero = () => {
+  const { t } = useLanguage();
   const [activeImageIdx, setActiveImageIdx] = useState(0);
   const [startIndex, setStartIndex] = useState(0);
 
@@ -118,15 +120,15 @@ const TempleHero = () => {
           <div className={styles.statItem}>
             <span className={styles.statIcon}>🪔</span>
             <div>
-              <div className={styles.statValue}>Daily</div>
-              <div className={styles.statLabel}>Poojas</div>
+              <div className={styles.statValue}>{t.templeDetail.hero.daily}</div>
+              <div className={styles.statLabel}>{t.templeDetail.hero.poojas}</div>
             </div>
           </div>
           <div className={styles.statItem}>
             <span className={styles.statIcon}>🛡️</span>
             <div>
-              <div className={styles.statValue}>Verified</div>
-              <div className={styles.statLabel}>Priests</div>
+              <div className={styles.statValue}>{t.templeDetail.hero.verified}</div>
+              <div className={styles.statLabel}>{t.templeDetail.hero.priests}</div>
             </div>
           </div>
         </div>
@@ -134,11 +136,11 @@ const TempleHero = () => {
         <div className={styles.actionRow}>
           <Link href="/offerings" style={{ flex: 1, textDecoration: 'none', display: 'flex' }}>
             <Button variant="primary" className={styles.offerBtn} leftIcon={<span style={{ fontSize: '16px' }}>🙏</span>}>
-              Offer Now
+              {t.templeDetail.hero.offerNow}
             </Button>
           </Link>
           <Button variant="secondary" className={styles.shareBtn} leftIcon={<Share size={16} />}>
-            Share
+            {t.templeDetail.hero.share}
           </Button>
         </div>
       </div>
