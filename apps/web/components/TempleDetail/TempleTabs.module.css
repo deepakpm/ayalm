@@ -4,13 +4,14 @@
   border-radius: var(--radius-lg);
   box-shadow: 0 2px 10px rgba(0,0,0,0.02);
   border: 1px solid rgba(0,0,0,0.05);
-  padding: 0 24px;
+  overflow: hidden;
 }
 
 .tabsScroll {
   display: flex;
   overflow-x: auto;
   scrollbar-width: none;
+  padding: 0 24px;
 }
 
 .tabsScroll::-webkit-scrollbar {
@@ -37,4 +38,20 @@
 .activeTab {
   color: var(--color-primary);
   border-bottom-color: var(--color-primary);
+}
+
+@media (max-width: 768px) {
+  .tabsContainer {
+    margin: 24px 0;
+    border-radius: var(--radius-md);
+  }
+
+  .tabsScroll {
+    padding: 0 16px;
+  }
+
+  .tabBtn {
+    padding: 16px 12px;
+    font-size: 13px;
+  }
 }

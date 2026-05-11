@@ -170,21 +170,58 @@
 @media (max-width: 1024px) {
   .heroContainer {
     grid-template-columns: 1fr;
+    gap: 32px;
   }
 }
 
 @media (max-width: 768px) {
-  .title {
-    font-size: 28px;
+  .heroContainer {
+    padding: 24px 20px;
+    gap: 24px;
+    border-radius: var(--radius-lg);
   }
-  
+
+  .mainImageWrapper {
+    height: 300px;
+  }
+
+  .thumbnailWrapper {
+    height: 60px;
+  }
+
+  .title {
+    font-size: 26px;
+    margin-bottom: 12px;
+  }
+
+  .metaRow {
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-bottom: 16px;
+  }
+
+  .divider {
+    display: none;
+  }
+
+  .description {
+    font-size: 14px;
+    margin-bottom: 24px;
+  }
+
   .statsGrid {
     grid-template-columns: repeat(2, 1fr);
-    gap: 20px;
+    gap: 16px;
+    margin-bottom: 32px;
   }
 
   .actionRow {
     flex-direction: column;
+    width: 100%;
+  }
+
+  .offerBtn {
+    width: 100%;
   }
 
   .shareBtn {

@@ -30,21 +30,21 @@ const TempleHero = () => {
 
   return (
     <div className={styles.heroContainer}>
-      
+
       {/* Left Image Gallery */}
       <div className={styles.galleryCol}>
         <div className={styles.mainImageWrapper}>
-          <Image 
-            src={MOCK_IMAGES[activeImageIdx] || ''} 
-            alt="Temple Main Image" 
-            fill 
+          <Image
+            src={MOCK_IMAGES[activeImageIdx] || ''}
+            alt="Temple Main Image"
+            fill
             style={{ objectFit: 'cover' }}
             className={styles.mainImage}
           />
         </div>
         <div className={styles.thumbnailStrip}>
-          <button 
-            className={styles.navBtn} 
+          <button
+            className={styles.navBtn}
             onClick={handlePrev}
             disabled={startIndex === 0}
             style={{ opacity: startIndex === 0 ? 0.5 : 1, cursor: startIndex === 0 ? 'not-allowed' : 'pointer' }}
@@ -55,8 +55,8 @@ const TempleHero = () => {
             {MOCK_IMAGES.slice(startIndex, startIndex + 4).map((img, idx) => {
               const actualIdx = startIndex + idx;
               return (
-                <div 
-                  key={actualIdx} 
+                <div
+                  key={actualIdx}
                   className={`${styles.thumbnailWrapper} ${activeImageIdx === actualIdx ? styles.activeThumb : ''}`}
                   onClick={() => setActiveImageIdx(actualIdx)}
                 >
@@ -65,8 +65,8 @@ const TempleHero = () => {
               );
             })}
           </div>
-          <button 
-            className={styles.navBtn} 
+          <button
+            className={styles.navBtn}
             onClick={handleNext}
             disabled={startIndex >= MOCK_IMAGES.length - 4}
             style={{ opacity: startIndex >= MOCK_IMAGES.length - 4 ? 0.5 : 1, cursor: startIndex >= MOCK_IMAGES.length - 4 ? 'not-allowed' : 'pointer' }}
@@ -83,9 +83,9 @@ const TempleHero = () => {
             Ancient Temple
           </Badge>
         </div>
-        
+
         <h1 className={styles.title}>Arulmigu Meenakshi<br />Amman Temple</h1>
-        
+
         <div className={styles.metaRow}>
           <span className={styles.location}>
             <MapPin size={16} /> Madurai, Tamil Nadu
@@ -95,11 +95,11 @@ const TempleHero = () => {
             <Star size={16} fill="#C08A3E" color="#C08A3E" /> 4.9 (2.5K+ Ratings)
           </span>
         </div>
-        
+
         <p className={styles.description}>
           One of the most sacred temples dedicated to Goddess Meenakshi and Lord Sundareswarar, a symbol of divine grace and prosperity.
         </p>
-        
+
         <div className={styles.statsGrid}>
           <div className={styles.statItem}>
             <span className={styles.statIcon}>⛩️</span>
@@ -132,8 +132,8 @@ const TempleHero = () => {
         </div>
 
         <div className={styles.actionRow}>
-          <Link href="/offerings" style={{ flex: 1, textDecoration: 'none' }}>
-            <Button variant="primary" className={styles.offerBtn} leftIcon={<span style={{fontSize: '16px'}}>🙏</span>}>
+          <Link href="/offerings" style={{ flex: 1, textDecoration: 'none', display: 'flex' }}>
+            <Button variant="primary" className={styles.offerBtn} leftIcon={<span style={{ fontSize: '16px' }}>🙏</span>}>
               Offer Now
             </Button>
           </Link>

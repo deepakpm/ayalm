@@ -2,6 +2,8 @@
   background-color: var(--color-bg-light);
   padding: 40px 0 80px 0;
   min-height: 100vh;
+  overflow-x: hidden;
+  max-width: 100vw;
 }
 
 .breadcrumbs {
@@ -11,6 +13,7 @@
   font-size: 14px;
   margin-bottom: 24px;
   padding-top: 20px;
+  flex-wrap: wrap;
 }
 
 .breadcrumbLink {
@@ -51,10 +54,12 @@
   display: flex;
   flex-direction: column;
   gap: 32px;
+  min-width: 0;
 }
 
 .sidebarColumn {
   position: relative;
+  min-width: 0;
 }
 
 .stickySidebar {
@@ -67,10 +72,16 @@
 
 @media (max-width: 1024px) {
   .contentGrid {
-    grid-template-columns: 1fr;
+    grid-template-columns: minmax(0, 1fr);
   }
   
   .stickySidebar {
     position: static;
+  }
+}
+
+@media (max-width: 768px) {
+  .pageBackground {
+    padding: 24px 0 60px 0;
   }
 }

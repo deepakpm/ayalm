@@ -179,3 +179,14 @@
   width: 100%;
   justify-content: center;
 }
+
+@media (max-width: 768px) {
+  .sidebarWidget {
+    padding: 20px;
+    border-radius: var(--radius-lg);
+  }
+
+  .widgetTitle {
+    font-size: 18px;
+  }
+}
