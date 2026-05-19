@@ -17,8 +17,16 @@ const MOCK_IMAGES = [
   '/images/temple_brihadeeswarar.png',
 ];
 
-const TempleHero = () => {
+interface TempleHeroProps {
+  temple: any;
+}
+
+const TempleHero: React.FC<TempleHeroProps> = ({ temple }) => {
   const { t } = useLanguage();
+  const gallery = (temple.gallery && temple.gallery.length > 0)
+    ? temple.gallery.map((item: any) => item.imageUrl)
+    : [temple.imageUrl, ...MOCK_IMAGES.slice(1)];
+
   const [activeImageIdx, setActiveImageIdx] = useState(0);
   const [startIndex, setStartIndex] = useState(0);
 
@@ -27,7 +35,7 @@ const TempleHero = () => {
   };
 
   const handleNext = () => {
-    setStartIndex(prev => Math.min(prev + 1, Math.max(0, MOCK_IMAGES.length - 4)));
+    setStartIndex(prev => Math.min(prev + 1, Math.max(0, gallery.length - 4)));
   };
 
   return (
@@ -37,8 +45,8 @@ const TempleHero = () => {
       <div className={styles.galleryCol}>
         <div className={styles.mainImageWrapper}>
           <Image
-            src={MOCK_IMAGES[activeImageIdx] || ''}
-            alt="Temple Main Image"
+            src={gallery[activeImageIdx] || ''}
+            alt={temple.name}
             fill
             style={{ objectFit: 'cover' }}
             className={styles.mainImage}
@@ -54,7 +62,7 @@ const TempleHero = () => {
             <ChevronLeft size={16} />
           </button>
           <div className={styles.thumbnails}>
-            {MOCK_IMAGES.slice(startIndex, startIndex + 4).map((img, idx) => {
+            {gallery.slice(startIndex, startIndex + 4).map((img: any, idx: number) => {
               const actualIdx = startIndex + idx;
               return (
                 <div
@@ -70,8 +78,8 @@ const TempleHero = () => {
           <button
             className={styles.navBtn}
             onClick={handleNext}
-            disabled={startIndex >= MOCK_IMAGES.length - 4}
-            style={{ opacity: startIndex >= MOCK_IMAGES.length - 4 ? 0.5 : 1, cursor: startIndex >= MOCK_IMAGES.length - 4 ? 'not-allowed' : 'pointer' }}
+            disabled={startIndex >= gallery.length - 4}
+            style={{ opacity: startIndex >= gallery.length - 4 ? 0.5 : 1, cursor: startIndex >= gallery.length - 4 ? 'not-allowed' : 'pointer' }}
           >
             <ChevronRight size={16} />
           </button>
@@ -82,24 +90,24 @@ const TempleHero = () => {
       <div className={styles.infoCol}>
         <div className={styles.badgeWrapper}>
           <Badge variant="secondary" icon={<span style={{ fontSize: '10px' }}>⛩️</span>}>
-            Ancient Temple
+            {temple.isVerified ? 'Verified Temple' : 'Ancient Temple'}
           </Badge>
         </div>
 
-        <h1 className={styles.title}>Arulmigu Meenakshi<br />Amman Temple</h1>
+        <h1 className={styles.title}>{temple.name}</h1>
 
         <div className={styles.metaRow}>
           <span className={styles.location}>
-            <MapPin size={16} /> Madurai, Tamil Nadu
+            <MapPin size={16} /> {temple.city}, {temple.state}
           </span>
           <span className={styles.divider}>|</span>
           <span className={styles.rating}>
-            <Star size={16} fill="#C08A3E" color="#C08A3E" /> 4.9 (2.5K+ Ratings)
+            <Star size={16} fill="#C08A3E" color="#C08A3E" /> {temple.rating} ({temple.reviewCount > 1000 ? `${(temple.reviewCount / 1000).toFixed(1)}K+` : temple.reviewCount} Ratings)
           </span>
         </div>
 
         <p className={styles.description}>
-          One of the most sacred temples dedicated to Goddess Meenakshi and Lord Sundareswarar, a symbol of divine grace and prosperity.
+          {temple.description}
         </p>
 
         <div className={styles.statsGrid}>
@@ -134,7 +142,7 @@ const TempleHero = () => {
         </div>
 
         <div className={styles.actionRow}>
-          <Link href="/offerings" style={{ flex: 1, textDecoration: 'none', display: 'flex' }}>
+          <Link href={`/offerings?temple=${temple.id}`} style={{ flex: 1, textDecoration: 'none', display: 'flex' }}>
             <Button variant="primary" className={styles.offerBtn} leftIcon={<span style={{ fontSize: '16px' }}>🙏</span>}>
               {t.templeDetail.hero.offerNow}
             </Button>

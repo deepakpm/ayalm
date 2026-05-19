@@ -24,20 +24,26 @@ const SPECIALITIES = [
   }
 ];
 
-const SpecialitySection = () => {
+interface SpecialitySectionProps {
+  highlights: string[];
+}
+
+const SpecialitySection: React.FC<SpecialitySectionProps> = ({ highlights }) => {
+  if (!highlights || highlights.length === 0) return null;
+
   return (
     <section className={styles.sectionContainer}>
       <div className={styles.sectionHeader}>
-        <h2 className={styles.sectionTitle}>Speciality</h2>
+        <h2 className={styles.sectionTitle}>Speciality & Highlights</h2>
       </div>
 
       <div className={styles.specialityGrid}>
-        {SPECIALITIES.map((spec, idx) => (
+        {highlights.map((highlight, idx) => (
           <div key={idx} className={styles.specItem}>
-            <div className={styles.specIcon}>{spec.icon}</div>
+            <div className={styles.specIcon}>✨</div>
             <div>
-              <h4 className={styles.specTitle}>{spec.title}</h4>
-              <p className={styles.specDesc}>{spec.description}</p>
+              <h4 className={styles.specTitle}>{highlight}</h4>
+              <p className={styles.specDesc}>Significant feature of this sacred temple.</p>
             </div>
           </div>
         ))}

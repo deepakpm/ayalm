@@ -92,6 +92,12 @@ export const ta = {
       timingsText: 'காலை: 5:00 AM - 12:30 PM\nமாலை: 4:00 PM - 10:00 PM',
       location: 'அமைவிடம்',
       directions: 'வழிசெலுத்து'
+    },
+    trustBadges: {
+      devotees: { title: 'நம்பிக்கைக்குரிய', subtitle: '5L+ பக்தர்கள்' },
+      temples: { title: '1000+', subtitle: 'கோவில்கள்' },
+      poojas: { title: '50K+', subtitle: 'செய்யப்பட்ட பூஜைகள்' },
+      secure: { title: '100% பாதுகாப்பானது', subtitle: 'மற்றும் உறுதியானது' }
     }
   }
 };

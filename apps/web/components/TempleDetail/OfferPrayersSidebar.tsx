@@ -6,15 +6,16 @@ import { ShieldCheck } from 'lucide-react';
 import styles from './Sidebars.module.css';
 import { useLanguage } from '../../context/LanguageContext';
 
-const SIDEBAR_OFFERINGS = [
-  { name: 'Archana', price: '₹251' },
-  { name: 'Abhishekam', price: '₹501' },
-  { name: 'Sahasranama Archana', price: '₹751' },
-  { name: 'Kalyana Utsavam', price: '₹2,501' }
-];
+interface OfferPrayersSidebarProps {
+  offerings?: any[];
+}
 
-const OfferPrayersSidebar = () => {
+const OfferPrayersSidebar: React.FC<OfferPrayersSidebarProps> = ({ offerings }) => {
   const { t } = useLanguage();
+
+  const displayOfferings = offerings && offerings.length > 0 
+    ? offerings 
+    : [{ name: 'Archana', price: 251 }, { name: 'Abhishekam', price: 501 }];
 
   return (
     <div className={styles.sidebarWidget}>
@@ -24,11 +25,11 @@ const OfferPrayersSidebar = () => {
       </p>
 
       <ul className={styles.prayersList}>
-        {SIDEBAR_OFFERINGS.map((offer, idx) => (
+        {displayOfferings.map((offer, idx) => (
           <li key={idx} className={styles.prayerItem}>
             <span className={styles.prayerIcon}>⛩️</span>
             <span className={styles.prayerName}>{offer.name}</span>
-            <span className={styles.prayerPrice}>{offer.price}</span>
+            <span className={styles.prayerPrice}>₹{offer.price}</span>
           </li>
         ))}
       </ul>

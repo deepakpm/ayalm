@@ -1,27 +1,39 @@
 import Navbar from '../../../components/Navbar';
 import TempleDetailLayout from '../../../components/TempleDetail/TempleDetailLayout';
 import TrustBadges from '../../../components/TrustBadges';
-import { Landmark, ShieldCheck, HeadphonesIcon } from 'lucide-react';
 
-const templeTrustBadges = [
-  { icon: <Landmark size={28} />, title: '1000+ Temples', subtitle: 'Across Tamil Nadu' },
-  { icon: <span style={{ fontSize: '28px' }}>🙏</span>, title: 'Verified Priests', subtitle: 'Poojas performed as per Agama' },
-  { icon: <ShieldCheck size={28} />, title: 'Secure & Trusted', subtitle: 'Trusted by 5L+ Devotees' },
-  { icon: <HeadphonesIcon size={28} />, title: 'Support 24/7', subtitle: 'We are here to help you' },
-];
 
-export function generateStaticParams() {
-  return [
-    { id: 'meenakshi-amman' },
-  ];
-}
 
-export default function TempleDetailPage({ params }: { params: { id: string } }) {
+import { cookies } from 'next/headers';
+import { templeApi } from '../../../lib/api';
+
+export default async function TempleDetailPage({ 
+  params,
+  searchParams 
+}: { 
+  params: Promise<{ id: string }>;
+  searchParams: Promise<{ tab?: string }>;
+}) {
+  const { id } = await params;
+  const { tab } = await searchParams;
+  
+  const cookieStore = await cookies();
+  const lang = cookieStore.get('ayalam_lang')?.value?.toUpperCase() || 'EN';
+  
+  let initialTemple = null;
+  try {
+    initialTemple = await templeApi.getBySlug(id, lang);
+  } catch (error) {
+    console.error("Failed to pre-fetch temple on server:", error);
+  }
+
+  const activeTab = tab || 'Overview';
+
   return (
     <main>
       <Navbar />
-      <TempleDetailLayout id={params.id} />
-      <TrustBadges badges={templeTrustBadges} className="temples-trust-badges" />
+      <TempleDetailLayout id={id} initialTemple={initialTemple} activeTab={activeTab} />
+      <TrustBadges className="temples-trust-badges" />
     </main>
   );
 }

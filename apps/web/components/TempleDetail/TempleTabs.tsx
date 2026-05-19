@@ -4,13 +4,23 @@ import React from 'react';
 import styles from './TempleTabs.module.css';
 import { useLanguage } from '../../context/LanguageContext';
 
+import { useRouter, useSearchParams, usePathname } from 'next/navigation';
+
 interface TempleTabsProps {
   activeTab: string;
-  onTabChange: (tab: string) => void;
 }
 
-const TempleTabs: React.FC<TempleTabsProps> = ({ activeTab, onTabChange }) => {
+const TempleTabs: React.FC<TempleTabsProps> = ({ activeTab }) => {
   const { t } = useLanguage();
+  const router = useRouter();
+  const pathname = usePathname();
+  const searchParams = useSearchParams();
+
+  const handleTabClick = (tabId: string) => {
+    const params = new URLSearchParams(searchParams.toString());
+    params.set('tab', tabId);
+    router.push(`${pathname}?${params.toString()}`, { scroll: false });
+  };
 
   const TABS = [
     { id: 'Overview', label: t.templeDetail.tabs.overview },
@@ -31,7 +41,7 @@ const TempleTabs: React.FC<TempleTabsProps> = ({ activeTab, onTabChange }) => {
           <button
             key={tab.id}
             className={`${styles.tabBtn} ${activeTab === tab.id ? styles.activeTab : ''}`}
-            onClick={() => onTabChange(tab.id)}
+            onClick={() => handleTabClick(tab.id)}
           >
             {tab.label}
           </button>

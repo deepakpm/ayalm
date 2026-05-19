@@ -7,7 +7,12 @@ import { ExternalLink } from 'lucide-react';
 import styles from './Sidebars.module.css';
 import { useLanguage } from '../../context/LanguageContext';
 
-const LocationSidebar = () => {
+interface LocationSidebarProps {
+  city?: string;
+  state?: string;
+}
+
+const LocationSidebar: React.FC<LocationSidebarProps> = ({ city, state }) => {
   const { t } = useLanguage();
 
   return (
@@ -15,8 +20,8 @@ const LocationSidebar = () => {
       <h3 className={styles.widgetTitle}>{t.templeDetail.sidebar.location}</h3>
       
       <p className={styles.addressText}>
-        Temple City, Madurai,<br />
-        Tamil Nadu - 625001
+        {city || 'Temple City'}, {state || 'Tamil Nadu'}<br />
+        India
       </p>
 
       <div className={styles.mapWrapper}>

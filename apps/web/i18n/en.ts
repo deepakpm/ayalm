@@ -92,6 +92,12 @@ export const en = {
       timingsText: 'Morning: 5:00 AM - 12:30 PM\nEvening: 4:00 PM - 10:00 PM',
       location: 'Location',
       directions: 'Get Directions'
+    },
+    trustBadges: {
+      devotees: { title: 'Trusted by', subtitle: '500K+ Devotees' },
+      temples: { title: '1000+', subtitle: 'Temples' },
+      poojas: { title: '50K+', subtitle: 'Poojas Performed' },
+      secure: { title: '100% Safe &', subtitle: 'Secure' }
     }
   }
 };

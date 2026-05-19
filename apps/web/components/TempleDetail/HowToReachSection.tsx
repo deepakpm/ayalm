@@ -2,7 +2,21 @@ import React from 'react';
 import { Plane, Train, Bus, MapPin } from 'lucide-react';
 import styles from './Sections.module.css';
 
-const HowToReachSection = () => {
+interface HowToReachSectionProps {
+  city?: string;
+  state?: string;
+  nearestAirport?: string;
+  nearestRailwayStation?: string;
+  roadDirections?: string;
+}
+
+const HowToReachSection: React.FC<HowToReachSectionProps> = ({ 
+  city, 
+  state, 
+  nearestAirport, 
+  nearestRailwayStation, 
+  roadDirections 
+}) => {
   return (
     <section className={styles.sectionContainer}>
       <div className={styles.sectionHeader}>
@@ -17,7 +31,7 @@ const HowToReachSection = () => {
           <div className={styles.reachContent}>
             <h4 className={styles.reachTitle}>By Air</h4>
             <p className={styles.reachDesc}>
-              The nearest airport is Madurai International Airport (IXM), located about 12 km from the temple.
+              {nearestAirport || `The nearest airport is ${city} International Airport, well connected to major global destinations.`}
             </p>
           </div>
         </div>
@@ -29,7 +43,7 @@ const HowToReachSection = () => {
           <div className={styles.reachContent}>
             <h4 className={styles.reachTitle}>By Train</h4>
             <p className={styles.reachDesc}>
-              Madurai Junction Railway Station is just 2 km away and is well connected to major cities.
+              {nearestRailwayStation || `${city} Junction Railway Station is the main railhead connecting the temple to other parts of ${state}.`}
             </p>
           </div>
         </div>
@@ -41,7 +55,7 @@ const HowToReachSection = () => {
           <div className={styles.reachContent}>
             <h4 className={styles.reachTitle}>By Road</h4>
             <p className={styles.reachDesc}>
-              Mattuthavani and Periyar bus stands offer regular bus services from all parts of Tamil Nadu.
+              {roadDirections || `Regular bus services are available from major cities in ${state} and neighboring states.`}
             </p>
           </div>
         </div>

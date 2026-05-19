@@ -1,0 +1,233 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// ─── Enums ───────────────────────────────────────────────────────────────────
+
+enum UserRole {
+  DEVOTEE
+  ADMIN
+}
+
+enum TranslationLocale {
+  EN
+  TA
+  HI
+}
+
+enum DeityRole {
+  MAIN
+  CONSORT
+  SECONDARY
+}
+
+enum TimeType {
+  MORNING
+  EVENING
+}
+
+enum Day {
+  MONDAY
+  TUESDAY
+  WEDNESDAY
+  THURSDAY
+  FRIDAY
+  SATURDAY
+  SUNDAY
+}
+
+enum OfferingFrequency {
+  DAILY
+  WEEKLY
+  MONTHLY
+  SPECIAL
+}
+
+// ─── Users ───────────────────────────────────────────────────────────────────
+
+model User {
+  id                String     @id @default(cuid())
+  email             String     @unique
+  phone             String?    @unique
+  name              String
+  passwordHash      String?
+  role              UserRole   @default(DEVOTEE)
+  preferredLanguage String     @default("en")
+  ratings           Rating[]
+  createdAt         DateTime   @default(now())
+  updatedAt         DateTime   @updatedAt
+}
+
+// ─── Temples & Catalog ───────────────────────────────────────────────────────
+
+model Temple {
+  id           String              @id @default(cuid())
+  slug         String              @unique
+  imageUrl     String              @default("")
+  rating       Float               @default(0)
+  reviewCount  Int                 @default(0)
+  isVerified   Boolean             @default(false)
+  isFeatured   Boolean             @default(false)
+  translations TempleTranslation[]
+  highlights   TempleHighlight[]
+  timings      Timings[]
+  deities      Deity[]
+  offerings    Offering[]
+  events       Event[]
+  gallery      Gallery[]
+  ratings      Rating[]
+  createdAt    DateTime            @default(now())
+  updatedAt    DateTime            @updatedAt
+}
+
+// Translatable text fields for Temple (name, description, city, state, history, address)
+model TempleTranslation {
+  id          String            @id @default(cuid())
+  temple      Temple            @relation(fields: [templeId], references: [id], onDelete: Cascade)
+  templeId    String
+  locale      TranslationLocale
+  name        String
+  description String            @default("")
+  city                  String
+  state                 String
+  address               String?
+  history               String?
+  landmark              String?
+  nearestAirport        String?
+  nearestRailwayStation String?
+  roadDirections        String?
+
+  @@unique([templeId, locale])
+}
+
+// Per-locale highlight bullet points
+model TempleHighlight {
+  id       String            @id @default(cuid())
+  temple   Temple            @relation(fields: [templeId], references: [id], onDelete: Cascade)
+  templeId String
+  locale   TranslationLocale
+  text     String
+  order    Int               @default(0)
+}
+
+// Structured timings (replaces the old Json field)
+model Timings {
+  id        String   @id @default(cuid())
+  temple    Temple   @relation(fields: [templeId], references: [id], onDelete: Cascade)
+  templeId  String
+  timeType  TimeType @default(MORNING)
+  startTime String   // "05:00 AM"
+  endTime   String   // "12:30 PM"
+  day       Day?     // null = applies every day
+}
+
+// ─── Deities ─────────────────────────────────────────────────────────────────
+
+model Deity {
+  id           String             @id @default(cuid())
+  temple       Temple             @relation(fields: [templeId], references: [id], onDelete: Cascade)
+  templeId     String
+  role         DeityRole          @default(SECONDARY)
+  imageUrl     String             @default("")
+  displayOrder Int                @default(0)
+  translations DeityTranslation[]
+  createdAt    DateTime           @default(now())
+}
+
+model DeityTranslation {
+  id          String            @id @default(cuid())
+  deity       Deity             @relation(fields: [deityId], references: [id], onDelete: Cascade)
+  deityId     String
+  locale      TranslationLocale
+  name        String
+  description String            @default("")
+  subtitle    String?
+
+  @@unique([deityId, locale])
+}
+
+// ─── Events ──────────────────────────────────────────────────────────────────
+
+model Event {
+  id           String             @id @default(cuid())
+  temple       Temple             @relation(fields: [templeId], references: [id], onDelete: Cascade)
+  templeId     String
+  startDate    DateTime
+  endDate      DateTime
+  imageUrl     String?
+  translations EventTranslation[]
+  createdAt    DateTime           @default(now())
+}
+
+model EventTranslation {
+  id          String            @id @default(cuid())
+  event       Event             @relation(fields: [eventId], references: [id], onDelete: Cascade)
+  eventId     String
+  locale      TranslationLocale
+  name        String
+  description String            @default("")
+
+  @@unique([eventId, locale])
+}
+
+// ─── Gallery ─────────────────────────────────────────────────────────────────
+
+model Gallery {
+  id        String   @id @default(cuid())
+  temple    Temple   @relation(fields: [templeId], references: [id], onDelete: Cascade)
+  templeId  String
+  imageUrl  String
+  caption   String?
+  order     Int      @default(0)
+  createdAt DateTime @default(now())
+}
+
+// ─── Offerings ───────────────────────────────────────────────────────────────
+
+model Offering {
+  id           String                @id @default(cuid())
+  temple       Temple                @relation(fields: [templeId], references: [id], onDelete: Cascade)
+  templeId     String
+  price        Float
+  currency     String                @default("INR")
+  frequency    OfferingFrequency     @default(DAILY)
+  imageUrl     String?
+  isAvailable  Boolean               @default(true)
+  translations OfferingTranslation[]
+  createdAt    DateTime              @default(now())
+  updatedAt    DateTime              @updatedAt
+}
+
+model OfferingTranslation {
+  id          String            @id @default(cuid())
+  offering    Offering          @relation(fields: [offeringId], references: [id], onDelete: Cascade)
+  offeringId  String
+  locale      TranslationLocale
+  name        String
+  description String            @default("")
+
+  @@unique([offeringId, locale])
+}
+
+// ─── Ratings ─────────────────────────────────────────────────────────────────
+
+model Rating {
+  id        String   @id @default(cuid())
+  temple    Temple   @relation(fields: [templeId], references: [id], onDelete: Cascade)
+  templeId  String
+  user      User     @relation(fields: [userId], references: [id])
+  userId    String
+  rating    Float
+  review    String
+  createdAt DateTime @default(now())
+
+  @@unique([templeId, userId])
+}

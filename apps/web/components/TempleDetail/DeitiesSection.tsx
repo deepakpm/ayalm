@@ -7,29 +7,14 @@ import { Card } from '@repo/ui/card';
 import styles from './Sections.module.css';
 import { useLanguage } from '../../context/LanguageContext';
 
-const DeitiesSection = () => {
+interface DeitiesSectionProps {
+  deities: any[];
+}
+
+const DeitiesSection: React.FC<DeitiesSectionProps> = ({ deities }) => {
   const { t } = useLanguage();
 
-  const DEITIES = [
-    {
-      name: t.templeDetail.deityData.meenakshi.name,
-      role: t.templeDetail.deityData.meenakshi.role,
-      description: t.templeDetail.deityData.meenakshi.desc,
-      image: '/images/temple_meenakshi.png'
-    },
-    {
-      name: t.templeDetail.deityData.sundareswarar.name,
-      role: t.templeDetail.deityData.sundareswarar.role,
-      description: t.templeDetail.deityData.sundareswarar.desc,
-      image: '/images/temple_arunachaleswarar.png'
-    },
-    {
-      name: t.templeDetail.deityData.kallazhagar.name,
-      role: t.templeDetail.deityData.kallazhagar.role,
-      description: t.templeDetail.deityData.kallazhagar.desc,
-      image: '/images/temple_ranganathaswamy.png'
-    }
-  ];
+  if (!deities || deities.length === 0) return null;
 
   return (
     <section className={styles.sectionContainer}>
@@ -39,10 +24,10 @@ const DeitiesSection = () => {
       </div>
 
       <div className={styles.deitiesGrid}>
-        {DEITIES.map((deity, idx) => (
+        {deities.map((deity, idx) => (
           <Card key={idx} className={styles.deityCard}>
             <div className={styles.deityImage}>
-              <Image src={deity.image} alt={deity.name} fill style={{ objectFit: 'cover' }} />
+              <Image src={deity.imageUrl} alt={deity.name} fill style={{ objectFit: 'cover' }} />
             </div>
             <div className={styles.deityContent}>
               <h3 className={styles.deityName}>{deity.name}</h3>

@@ -1,10 +1,11 @@
 "use client";
 
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo, useEffect } from 'react';
 import Link from 'next/link';
-import { Search, MapPin, ChevronDown, ChevronRight, RotateCcw, X, Home } from 'lucide-react';
+import { Search, MapPin, ChevronDown, ChevronRight, RotateCcw, X, Home, Loader2 } from 'lucide-react';
 import { TempleCard } from '@repo/ui/temple-card';
 import styles from './TemplesDirectory.module.css';
+import { templeApi } from '../lib/api';
 
 const MOCK_TEMPLES = [
   {
@@ -103,12 +104,30 @@ const DEITIES = [
 const TYPES = ['Ancient Temples', 'Popular Temples', 'Parihara Temples', 'Sthala Purana Temples'];
 
 const TemplesDirectory = () => {
+  const [temples, setTemples] = useState<any[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
   const [activeTab, setActiveTab] = useState('All Temples');
   const [isMobileFilterOpen, setIsMobileFilterOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedDeities, setSelectedDeities] = useState<string[]>([]);
   const [selectedTypes, setSelectedTypes] = useState<string[]>([]);
   const [sortBy, setSortBy] = useState('Popularity');
+
+  useEffect(() => {
+    const fetchTemples = async () => {
+      try {
+        setLoading(true);
+        const data = await templeApi.getAll();
+        setTemples(data.items);
+      } catch (err: any) {
+        setError(err.message || 'Failed to fetch temples');
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchTemples();
+  }, []);
 
   const toggleDeity = (deity: string) => {
     setSelectedDeities(prev => 
@@ -130,11 +149,11 @@ const TemplesDirectory = () => {
   };
 
   const filteredTemples = useMemo(() => {
-    return MOCK_TEMPLES.filter(temple => {
+    return temples.filter(temple => {
       // 1. Search filter
       if (searchQuery) {
         const query = searchQuery.toLowerCase();
-        if (!temple.title.toLowerCase().includes(query) && !temple.location.toLowerCase().includes(query)) {
+        if (!temple.name.toLowerCase().includes(query) && !temple.city.toLowerCase().includes(query)) {
           return false;
         }
       }
@@ -142,30 +161,21 @@ const TemplesDirectory = () => {
       // 2. Tab filter
       if (activeTab !== 'All Temples') {
         const tabDeity = activeTab.replace(' Temples', '');
-        if (temple.deity !== tabDeity) return false;
-      }
-
-      // 3. Checkbox Deities filter
-      if (selectedDeities.length > 0 && !selectedDeities.includes(temple.deity)) {
-        return false;
-      }
-
-      // 4. Checkbox Types filter
-      if (selectedTypes.length > 0 && !selectedTypes.includes(temple.type)) {
-        return false;
+        // In real app, we would check deity name
+        if (!temple.deities?.some((d: any) => d.name.includes(tabDeity))) return false;
       }
 
       return true;
     }).sort((a, b) => {
       if (sortBy === 'Popularity') {
-        return b.popularity - a.popularity;
+        return b.rating - a.rating;
       }
       if (sortBy === 'Name (A-Z)') {
-        return a.title.localeCompare(b.title);
+        return a.name.localeCompare(b.name);
       }
       return 0;
     });
-  }, [searchQuery, activeTab, selectedDeities, selectedTypes, sortBy]);
+  }, [temples, searchQuery, activeTab, selectedDeities, selectedTypes, sortBy]);
 
   return (
     <div className={styles.directoryPage}>
@@ -303,18 +313,27 @@ const TemplesDirectory = () => {
 
             {/* Grid */}
             <div className={styles.grid}>
-              {filteredTemples.length > 0 ? (
+              {loading ? (
+                <div className={styles.loadingState}>
+                  <Loader2 className={styles.spinner} />
+                  <p>Finding temples...</p>
+                </div>
+              ) : error ? (
+                <div className={styles.errorState}>
+                  <p>{error}</p>
+                  <button onClick={() => window.location.reload()} className={styles.resetBtnSmall}>Retry</button>
+                </div>
+              ) : filteredTemples.length > 0 ? (
                 filteredTemples.map((temple, idx) => {
-                  const slug = temple.title.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)+/g, '');
                   return (
-                    <Link href={`/temples/${slug}`} key={idx} className={styles.gridItemLink} style={{textDecoration: 'none', display: 'flex', flexDirection: 'column'}}>
+                    <Link href={`/temples/${temple.slug}`} key={temple.id || idx} className={styles.gridItemLink} style={{textDecoration: 'none', display: 'flex', flexDirection: 'column'}}>
                       <div className={styles.gridItem}>
                         <TempleCard
-                          title={temple.title}
-                          location={temple.location}
-                          imageSrc={temple.imageSrc}
-                          badgeText={temple.badgeText}
-                          offeringsCount={temple.offeringsCount}
+                          title={temple.name}
+                          location={`${temple.city}, ${temple.state}`}
+                          imageSrc={temple.imageUrl}
+                          badgeText={temple.isVerified ? 'Verified' : 'Ancient'}
+                          offeringsCount={temple.reviewCount > 1000 ? `${(temple.reviewCount/1000).toFixed(1)}K+` : temple.reviewCount.toString()}
                         />
                       </div>
                     </Link>

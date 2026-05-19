@@ -1,6 +1,9 @@
+"use client";
+
 import React from 'react';
 import { ShieldCheck, Landmark, Users } from 'lucide-react';
 import styles from './TrustBadges.module.css';
+import { useLanguage } from '../context/LanguageContext';
 
 export interface TrustBadgeProps {
   icon: React.ReactNode;
@@ -8,23 +11,26 @@ export interface TrustBadgeProps {
   subtitle: string;
 }
 
-const defaultBadges: TrustBadgeProps[] = [
-  { icon: <ShieldCheck size={28} />, title: 'Trusted by', subtitle: '500K+ Devotees' },
-  { icon: <Landmark size={28} />, title: '1000+', subtitle: 'Temples' },
-  { icon: <Users size={28} />, title: '50K+', subtitle: 'Poojas Performed' },
-  { icon: <ShieldCheck size={28} />, title: '100% Safe &', subtitle: 'Secure' },
-];
-
 export interface TrustBadgesSectionProps {
   badges?: TrustBadgeProps[];
   className?: string;
 }
 
-const TrustBadges: React.FC<TrustBadgesSectionProps> = ({ badges = defaultBadges, className = '' }) => {
+const TrustBadges: React.FC<TrustBadgesSectionProps> = ({ badges, className = '' }) => {
+  const { t } = useLanguage();
+
+  const translatedDefaultBadges: TrustBadgeProps[] = [
+    { icon: <Users size={28} />, title: t.templeDetail.trustBadges.devotees.title, subtitle: t.templeDetail.trustBadges.devotees.subtitle },
+    { icon: <Landmark size={28} />, title: t.templeDetail.trustBadges.temples.title, subtitle: t.templeDetail.trustBadges.temples.subtitle },
+    { icon: <Users size={28} />, title: t.templeDetail.trustBadges.poojas.title, subtitle: t.templeDetail.trustBadges.poojas.subtitle },
+    { icon: <ShieldCheck size={28} />, title: t.templeDetail.trustBadges.secure.title, subtitle: t.templeDetail.trustBadges.secure.subtitle },
+  ];
+
+  const displayBadges = badges || translatedDefaultBadges;
   return (
     <section className={`${styles.badgesSection} ${className}`}>
       <div className={`container ${styles.container}`}>
-        {badges.map((badge, idx) => (
+        {displayBadges.map((badge, idx) => (
           <React.Fragment key={idx}>
             <div className={styles.badge}>
               <div className={styles.icon}>{badge.icon}</div>
@@ -33,7 +39,7 @@ const TrustBadges: React.FC<TrustBadgesSectionProps> = ({ badges = defaultBadges
                 <span className={styles.subtitle}>{badge.subtitle}</span>
               </div>
             </div>
-            {idx < badges.length - 1 && <div className={styles.divider}></div>}
+            {idx < displayBadges.length - 1 && <div className={styles.divider}></div>}
           </React.Fragment>
         ))}
       </div>

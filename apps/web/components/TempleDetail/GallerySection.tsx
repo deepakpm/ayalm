@@ -14,8 +14,16 @@ const GALLERY_IMAGES = [
   '/images/gopuram_side.png'
 ];
 
-const GallerySection = () => {
+interface GallerySectionProps {
+  gallery?: any[];
+}
+
+const GallerySection: React.FC<GallerySectionProps> = ({ gallery }) => {
   const [selectedImage, setSelectedImage] = useState<string | null>(null);
+  
+  const displayImages = gallery && gallery.length > 0 
+    ? gallery.map(item => item.imageUrl) 
+    : GALLERY_IMAGES;
 
   return (
     <>
@@ -25,7 +33,7 @@ const GallerySection = () => {
         </div>
 
         <div className={styles.galleryGrid}>
-          {GALLERY_IMAGES.map((img, idx) => (
+          {displayImages.map((img, idx) => (
             <div key={idx} className={styles.galleryItem} onClick={() => setSelectedImage(img)}>
               <Image 
                 src={img} 
@@ -38,7 +46,7 @@ const GallerySection = () => {
           ))}
         </div>
       </section>
-
+      
       {/* Lightbox Modal */}
       {selectedImage && (
         <div className={styles.lightboxOverlay} onClick={() => setSelectedImage(null)}>

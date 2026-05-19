@@ -15,7 +15,10 @@ interface LanguageContextType {
 
 const LanguageContext = createContext<LanguageContextType | undefined>(undefined);
 
+import { useRouter } from 'next/navigation';
+
 export const LanguageProvider = ({ children }: { children: ReactNode }) => {
+  const router = useRouter();
   const [language, setLanguageState] = useState<Language>('en');
   const [mounted, setMounted] = useState(false);
 
@@ -24,13 +27,19 @@ export const LanguageProvider = ({ children }: { children: ReactNode }) => {
     const saved = localStorage.getItem('ayalam_lang') as Language;
     if (saved && (saved === 'en' || saved === 'ta')) {
       setLanguageState(saved);
+      // Ensure cookie is in sync on mount
+      document.cookie = `ayalam_lang=${saved}; path=/; max-age=31536000`;
     }
     setMounted(true);
   }, []);
-
+  
   const setLanguage = (lang: Language) => {
     setLanguageState(lang);
     localStorage.setItem('ayalam_lang', lang);
+    document.cookie = `ayalam_lang=${lang}; path=/; max-age=31536000`;
+    
+    // Refresh Server Components so they re-fetch with the new language cookie
+    router.refresh();
   };
 
   const t = language === 'ta' ? ta : en;

@@ -23,15 +23,20 @@ const REVIEWS = [
   }
 ];
 
-const ReviewsSection = () => {
+interface ReviewsSectionProps {
+  rating?: number;
+  reviewCount?: number;
+}
+
+const ReviewsSection: React.FC<ReviewsSectionProps> = ({ rating, reviewCount }) => {
   return (
     <section className={styles.sectionContainer}>
       <div className={styles.sectionHeader}>
         <h2 className={styles.sectionTitle}>Reviews</h2>
         <div className={styles.overallRating}>
           <Star size={20} fill="#C08A3E" color="#C08A3E" />
-          <span className={styles.ratingScore}>4.9</span>
-          <span className={styles.ratingCount}>(2.5K+ Ratings)</span>
+          <span className={styles.ratingScore}>{rating || 0}</span>
+          <span className={styles.ratingCount}>({reviewCount || 0} Ratings)</span>
         </div>
       </div>
 
