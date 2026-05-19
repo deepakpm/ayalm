@@ -34,6 +34,13 @@ enum TimeType {
   EVENING
 }
 
+enum TempleType {
+  ANCIENT
+  POPULAR
+  PARIHARA
+  STHALA_PURANA
+}
+
 enum Day {
   MONDAY
   TUESDAY
@@ -76,6 +83,7 @@ model Temple {
   reviewCount  Int                 @default(0)
   isVerified   Boolean             @default(false)
   isFeatured   Boolean             @default(false)
+  type         TempleType?
   translations TempleTranslation[]
   highlights   TempleHighlight[]
   timings      Timings[]

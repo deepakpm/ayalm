@@ -34,7 +34,7 @@ export const TempleCard: React.FC<TempleCardProps> = ({
   stats = [],
 }) => {
   return (
-    <Link href={`/temples/${slug}`} style={{ textDecoration: 'none', display: 'block', width: "30%", height: '100%' }}>
+    <Link href={`/temples/${slug}`} style={{ textDecoration: 'none', display: 'block', height: '100%' }}>
       <Card hoverable className={styles.templeCard}>
         <div className={styles.imageContainer}>
           <Image src={imageSrc} alt={title} fill style={{ objectFit: 'cover' }} />

@@ -40,3 +40,17 @@ export const getTempleBySlug = async (req: Request, res: Response): Promise<void
     res.status(500).json({ success: false, error: 'Failed to fetch temple' });
   }
 };
+
+export const getAllTemples = async (req: Request, res: Response): Promise<void> => {
+  try {
+    let lang = req.query['lang'] as TranslationLocale | null;
+    if (!lang) {
+      lang = TranslationLocale.EN;
+    }
+    const temples = await TempleService.getAllTemples(lang);
+    res.status(200).json({ success: true, data: temples });
+  } catch (error) {
+    console.error('Failed to fetch all temples', error);
+    res.status(500).json({ error: 'Failed to fetch all temples' });
+  }
+};

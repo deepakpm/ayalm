@@ -25,9 +25,23 @@ const findMostPopularTemples = async (lang: TranslationLocale = "EN") => {
 }
 
 
-const findAllTemples = async () => {
+const findAllTemples = async (lang: TranslationLocale = "EN") => {
     try {
         const result = await db.temple.findMany({
+            include: {
+                translations: {
+                    where: {
+                        locale: lang
+                    }
+                },
+                deities: {
+                    include: {
+                        translations: {
+                            where: { locale: lang }
+                        }
+                    }
+                }
+            },
             where: { isVerified: true }
         })
         return result;

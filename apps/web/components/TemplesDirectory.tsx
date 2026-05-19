@@ -6,6 +6,7 @@ import { Search, MapPin, ChevronDown, ChevronRight, RotateCcw, X, Home, Loader2 
 import { TempleCard } from '@repo/ui/temple-card';
 import styles from './TemplesDirectory.module.css';
 import { templeApi } from '../lib/api';
+import { useLanguage } from '../context/LanguageContext';
 
 const MOCK_TEMPLES = [
   {
@@ -90,44 +91,19 @@ const MOCK_TEMPLES = [
   }
 ];
 
-const CATEGORY_TABS = ['All Temples', 'Shiva Temples', 'Vishnu Temples', 'Amman Temples', 'Murugan Temples'];
+interface TemplesDirectoryProps {
+  initialTemples: any[];
+}
 
-const DEITIES = [
-  { id: 'Shiva', icon: '🕉️' },
-  { id: 'Vishnu', icon: '🪔' },
-  { id: 'Amman', icon: '🌸' },
-  { id: 'Murugan', icon: '🦚' },
-  { id: 'Ganesha', icon: '🐘' },
-  { id: 'Navagraha', icon: '☀️' },
-];
-
-const TYPES = ['Ancient Temples', 'Popular Temples', 'Parihara Temples', 'Sthala Purana Temples'];
-
-const TemplesDirectory = () => {
-  const [temples, setTemples] = useState<any[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
+const TemplesDirectory = ({ initialTemples }: TemplesDirectoryProps) => {
   const [activeTab, setActiveTab] = useState('All Temples');
   const [isMobileFilterOpen, setIsMobileFilterOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
+  const [selectedLocation, setSelectedLocation] = useState('All Locations');
   const [selectedDeities, setSelectedDeities] = useState<string[]>([]);
   const [selectedTypes, setSelectedTypes] = useState<string[]>([]);
   const [sortBy, setSortBy] = useState('Popularity');
 
-  useEffect(() => {
-    const fetchTemples = async () => {
-      try {
-        setLoading(true);
-        const data = await templeApi.getAll();
-        setTemples(data.items);
-      } catch (err: any) {
-        setError(err.message || 'Failed to fetch temples');
-      } finally {
-        setLoading(false);
-      }
-    };
-    fetchTemples();
-  }, []);
 
   const toggleDeity = (deity: string) => {
     setSelectedDeities(prev => 
@@ -143,17 +119,79 @@ const TemplesDirectory = () => {
 
   const resetFilters = () => {
     setSearchQuery('');
+    setSelectedLocation('All Locations');
     setSelectedDeities([]);
     setSelectedTypes([]);
     setActiveTab('All Temples');
   };
 
+  const availableDeities = useMemo(() => {
+    const deitiesMap = new Map<string, { id: string, icon: string }>();
+    initialTemples.forEach(temple => {
+      temple.deities?.forEach((d: any) => {
+        if (d.name) {
+          let icon = '🙏';
+          if (d.name.includes('Shiva')) icon = '🕉️';
+          else if (d.name.includes('Vishnu')) icon = '🪔';
+          else if (d.name.includes('Amman')) icon = '🌸';
+          else if (d.name.includes('Murugan')) icon = '🦚';
+          else if (d.name.includes('Ganesha')) icon = '🐘';
+          else if (d.name.includes('Navagraha')) icon = '☀️';
+          
+          if (!deitiesMap.has(d.name)) {
+            deitiesMap.set(d.name, { id: d.name, icon });
+          }
+        }
+      });
+    });
+    return Array.from(deitiesMap.values());
+  }, [initialTemples]);
+
+  const availableTypes = useMemo(() => {
+    const typeMap = new Map<string, { id: string, label: string }>();
+    initialTemples.forEach(temple => {
+      if (temple.type) {
+        if (!typeMap.has(temple.type)) {
+          let label = temple.type.split('_').map((w: string) => w.charAt(0) + w.slice(1).toLowerCase()).join(' ') + ' Temples';
+          typeMap.set(temple.type, { id: temple.type, label });
+        }
+      }
+    });
+    return Array.from(typeMap.values());
+  }, [initialTemples]);
+
+  const availableLocations = useMemo(() => {
+    const locations = new Set<string>();
+    initialTemples.forEach(t => {
+      if (t.state) locations.add(t.state);
+      if (t.city) locations.add(t.city);
+    });
+    return Array.from(locations).sort();
+  }, [initialTemples]);
+
   const filteredTemples = useMemo(() => {
-    return temples.filter(temple => {
+    return initialTemples.filter(temple => {
       // 1. Search filter
       if (searchQuery) {
         const query = searchQuery.toLowerCase();
-        if (!temple.name.toLowerCase().includes(query) && !temple.city.toLowerCase().includes(query)) {
+        const matchesName = temple.name.toLowerCase().includes(query);
+        const matchesCity = temple.city?.toLowerCase().includes(query) || false;
+        const matchesState = temple.state?.toLowerCase().includes(query) || false;
+        
+        // Format type to human-readable to match against query (e.g. 'STHALA_PURANA' -> 'sthala purana temples')
+        const formattedType = temple.type ? (temple.type.split('_').join(' ') + ' temples').toLowerCase() : '';
+        const matchesType = formattedType.includes(query) || (temple.type?.toLowerCase().includes(query) || false);
+        
+        const matchesDeity = temple.deities?.some((d: any) => d.name?.toLowerCase().includes(query)) || false;
+
+        if (!matchesName && !matchesCity && !matchesState && !matchesType && !matchesDeity) {
+          return false;
+        }
+      }
+
+      // 1.5. Location Dropdown filter
+      if (selectedLocation !== 'All Locations') {
+        if (temple.state !== selectedLocation && temple.city !== selectedLocation) {
           return false;
         }
       }
@@ -161,8 +199,18 @@ const TemplesDirectory = () => {
       // 2. Tab filter
       if (activeTab !== 'All Temples') {
         const tabDeity = activeTab.replace(' Temples', '');
-        // In real app, we would check deity name
         if (!temple.deities?.some((d: any) => d.name.includes(tabDeity))) return false;
+      }
+
+      // 3. Deity filter
+      if (selectedDeities.length > 0) {
+        if (!temple.deities?.some((d: any) => selectedDeities.some(sd => d.name.includes(sd)))) return false;
+      }
+
+      // 4. Type filter
+      if (selectedTypes.length > 0) {
+        const isMatch = selectedTypes.includes(temple.type);
+        if (!isMatch) return false;
       }
 
       return true;
@@ -175,7 +223,7 @@ const TemplesDirectory = () => {
       }
       return 0;
     });
-  }, [temples, searchQuery, activeTab, selectedDeities, selectedTypes, sortBy]);
+  }, [initialTemples, searchQuery, selectedLocation, activeTab, selectedDeities, selectedTypes, sortBy]);
 
   return (
     <div className={styles.directoryPage}>
@@ -214,8 +262,16 @@ const TemplesDirectory = () => {
           </div>
           <div className={styles.locationDropdown}>
             <MapPin size={18} />
-            <span>All Tamil Nadu</span>
-            <ChevronDown size={16} />
+            <select 
+              className={styles.sortSelectPlain}
+              value={selectedLocation}
+              onChange={(e) => setSelectedLocation(e.target.value)}
+            >
+              <option value="All Locations">All Locations</option>
+              {availableLocations.map(loc => (
+                <option key={loc} value={loc}>{loc}</option>
+              ))}
+            </select>
           </div>
           <div className={styles.sortDropdown}>
             <span>Sort by:</span>
@@ -253,7 +309,7 @@ const TemplesDirectory = () => {
                 <ChevronDown size={16} />
               </div>
               <ul className={styles.checkboxList}>
-                {DEITIES.map(deity => (
+                {availableDeities.map(deity => (
                   <li key={deity.id}>
                     <label>
                       <input 
@@ -274,14 +330,14 @@ const TemplesDirectory = () => {
                 <ChevronDown size={16} />
               </div>
               <ul className={styles.checkboxList}>
-                {TYPES.map(type => (
-                  <li key={type}>
+                {availableTypes.map(typeObj => (
+                  <li key={typeObj.id}>
                     <label>
                       <input 
                         type="checkbox" 
-                        checked={selectedTypes.includes(type)}
-                        onChange={() => toggleType(type)}
-                      /> {type}
+                        checked={selectedTypes.includes(typeObj.id)}
+                        onChange={() => toggleType(typeObj.id)}
+                      /> {typeObj.label}
                     </label>
                   </li>
                 ))}
@@ -298,7 +354,7 @@ const TemplesDirectory = () => {
             
             {/* Category Tabs */}
             <div className={styles.categoryTabs}>
-              {CATEGORY_TABS.map((tab) => (
+              {['All Temples', ...availableDeities.map(d => `${d.id} Temples`)].map((tab) => (
                 <button 
                   key={tab} 
                   className={`${styles.tabBtn} ${activeTab === tab ? styles.activeTab : ''}`}
@@ -313,30 +369,19 @@ const TemplesDirectory = () => {
 
             {/* Grid */}
             <div className={styles.grid}>
-              {loading ? (
-                <div className={styles.loadingState}>
-                  <Loader2 className={styles.spinner} />
-                  <p>Finding temples...</p>
-                </div>
-              ) : error ? (
-                <div className={styles.errorState}>
-                  <p>{error}</p>
-                  <button onClick={() => window.location.reload()} className={styles.resetBtnSmall}>Retry</button>
-                </div>
-              ) : filteredTemples.length > 0 ? (
+              {filteredTemples.length > 0 ? (
                 filteredTemples.map((temple, idx) => {
                   return (
-                    <Link href={`/temples/${temple.slug}`} key={temple.id || idx} className={styles.gridItemLink} style={{textDecoration: 'none', display: 'flex', flexDirection: 'column'}}>
-                      <div className={styles.gridItem}>
-                        <TempleCard
-                          title={temple.name}
-                          location={`${temple.city}, ${temple.state}`}
-                          imageSrc={temple.imageUrl}
-                          badgeText={temple.isVerified ? 'Verified' : 'Ancient'}
-                          offeringsCount={temple.reviewCount > 1000 ? `${(temple.reviewCount/1000).toFixed(1)}K+` : temple.reviewCount.toString()}
-                        />
-                      </div>
-                    </Link>
+                    <div key={temple.id || idx} className={styles.gridItem}>
+                      <TempleCard
+                        slug={temple.slug}
+                        title={temple.name}
+                        location={`${temple.city}, ${temple.state}`}
+                        imageSrc={temple.imageUrl}
+                        badgeText={temple.isVerified ? 'Verified' : 'Ancient'}
+                        offeringsCount={temple.reviewCount > 1000 ? `${(temple.reviewCount/1000).toFixed(1)}K+` : temple.reviewCount.toString()}
+                      />
+                    </div>
                   );
                 })
               ) : (

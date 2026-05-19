@@ -6,7 +6,7 @@ export const getUpcomingEvents = async (_req: Request, res: Response): Promise<v
     const events = await db.event.findMany({
       where: { startDate: { gte: new Date() } },
       orderBy: { startDate: 'asc' },
-      include: { temple: { select: { name: true, slug: true } } },
+      include: { temple: { select: { translations: { select: { name: true } }, slug: true } } },
     });
     res.json({ success: true, data: events });
   } catch {
