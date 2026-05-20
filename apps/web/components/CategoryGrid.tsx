@@ -37,15 +37,21 @@ const categories = [
   }
 ];
 
-const CategoryGrid = () => {
+interface CategoryGridProps {
+  features?: any[];
+}
+
+const CategoryGrid = ({ features = [] }: CategoryGridProps) => {
+  const activeFeatures = features.length > 0 ? features : categories; // fallback for safety
+
   return (
     <section className={styles.categorySection}>
       <div className={`container ${styles.gridContainer}`}>
-        {categories.map((cat, idx) => (
-          <Card key={idx} hoverable className={styles.card}>
+        {activeFeatures.map((cat, idx) => (
+          <Card key={cat.id || idx} hoverable className={styles.card}>
             <div className={styles.imageWrapper}>
               <Image 
-                src={cat.img} 
+                src={cat.imageUrl || cat.img || '/images/default_cat.png'} 
                 alt={cat.title} 
                 fill
                 style={{ objectFit: 'cover' }}
@@ -54,7 +60,7 @@ const CategoryGrid = () => {
             <div className={styles.content}>
               <div>
                 <h3 className={styles.title}>{cat.title}</h3>
-                <p className={styles.desc}>{cat.desc}</p>
+                <p className={styles.desc}>{cat.description || cat.desc}</p>
               </div>
               <button className={styles.iconButton} aria-label={`Explore ${cat.title}`}>
                 <ChevronRight size={20} />

@@ -28,3 +28,7 @@ export const templeApi = {
   getById: (id: string) => apiRequest<any>(`/temples/${id}`),
   getMostPopular: (lang: string) => apiRequest<any>(`/temples/most-popular?lang=${lang}`),
 };
+
+export const configApi = {
+  getHome: (lang: string = 'EN') => apiRequest<any>(`/config/home?lang=${lang}`),
+};

@@ -44,6 +44,10 @@ app.use('/api/offerings', proxy(CATALOG_SERVICE_URL, {
   proxyReqPathResolver: (req) => `/api/offerings${req.url}`,
 }));
 
+app.use('/api/config', proxy(CATALOG_SERVICE_URL, {
+  proxyReqPathResolver: (req) => `/api/config${req.url}`,
+}));
+
 // ─── Protected Routes (require JWT) ──────────────────────────────────────────
 app.use('/api/bookings', authMiddleware, proxy(BOOKING_SERVICE_URL, {
   proxyReqPathResolver: (req) => `/api/bookings${req.url}`,

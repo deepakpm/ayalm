@@ -1,17 +1,31 @@
 "use client";
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { Search, User, Menu, X } from 'lucide-react';
 import styles from './Navbar.module.css';
 
 import { useLanguage } from '../context/LanguageContext';
+import { configApi } from '../lib/api';
 
 const Navbar = () => {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const [features, setFeatures] = useState<any[]>([]);
   const pathname = usePathname();
   const { language, setLanguage, t } = useLanguage();
+
+  useEffect(() => {
+    const fetchConfig = async () => {
+      try {
+        const data = await configApi.getHome(language.toUpperCase());
+        setFeatures(data.features || []);
+      } catch (err) {
+        console.error('Failed to fetch navbar features', err);
+      }
+    };
+    fetchConfig();
+  }, [language]);
 
   const toggleMobileMenu = () => {
     setIsMobileMenuOpen(!isMobileMenuOpen);
@@ -29,12 +43,13 @@ const Navbar = () => {
         
         <ul className={`${styles.navLinks} ${isMobileMenuOpen ? styles.mobileOpen : ''}`}>
           <li><Link href="/" className={isActive('/') ? styles.active : ''}>{t.navbar.home}</Link></li>
-          <li><Link href="/temples" className={isActive('/temples') ? styles.active : ''}>{t.navbar.temples}</Link></li>
-          <li><Link href="/offerings" className={isActive('/offerings') ? styles.active : ''}>{t.navbar.offerings}</Link></li>
-          <li><a href="#">Astrology</a></li>
-          <li><a href="#">Iyer Connect</a></li>
-          <li><a href="#">Virathangal</a></li>
-          <li><a href="#">Online Store</a></li>
+          {features.map((feature) => (
+            <li key={feature.id}>
+              <Link href={feature.linkUrl} className={isActive(feature.linkUrl) ? styles.active : ''}>
+                {feature.title}
+              </Link>
+            </li>
+          ))}
         </ul>
 
         <div className={styles.actions}>

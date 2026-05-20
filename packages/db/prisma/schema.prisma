@@ -239,3 +239,52 @@ model Rating {
 
   @@unique([templeId, userId])
 }
+
+// ─── Configuration (Home & Features) ─────────────────────────────────────────
+
+model Feature {
+  id           String               @id @default(cuid())
+  slug         String               @unique // e.g., 'temples', 'offerings'
+  isActive     Boolean              @default(true)
+  imageUrl     String?              @default("")
+  icon         String?              // Optional icon identifier
+  linkUrl      String               // The route it links to, e.g., '/temples'
+  order        Int                  @default(0)
+  translations FeatureTranslation[]
+  createdAt    DateTime             @default(now())
+  updatedAt    DateTime             @updatedAt
+}
+
+model FeatureTranslation {
+  id          String            @id @default(cuid())
+  feature     Feature           @relation(fields: [featureId], references: [id], onDelete: Cascade)
+  featureId   String
+  locale      TranslationLocale
+  title       String
+  description String            @default("")
+
+  @@unique([featureId, locale])
+}
+
+model Banner {
+  id           String              @id @default(cuid())
+  imageUrl     String              @default("")
+  linkUrl      String?
+  isActive     Boolean             @default(true)
+  order        Int                 @default(0)
+  translations BannerTranslation[]
+  createdAt    DateTime            @default(now())
+  updatedAt    DateTime            @updatedAt
+}
+
+model BannerTranslation {
+  id          String            @id @default(cuid())
+  banner      Banner            @relation(fields: [bannerId], references: [id], onDelete: Cascade)
+  bannerId    String
+  locale      TranslationLocale
+  title       String
+  subtitle    String?
+  ctaText     String?           @default("Explore Now")
+
+  @@unique([bannerId, locale])
+}

@@ -4,6 +4,7 @@ import cors from 'cors';
 import helmet from 'helmet';
 import morgan from 'morgan';
 import { templeRouter } from './modules/temples/temples.router';
+import configRouter from './modules/config/config.routes';
 
 
 const app = express();
@@ -21,6 +22,7 @@ app.get('/health', (_req, res) => {
 
 // Routes
 app.use('/api/temples', templeRouter);
+app.use('/api/config', configRouter);
 
 
 app.listen(PORT, () => {
